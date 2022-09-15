@@ -14,7 +14,7 @@ const Faqs: NextPage = () => {
   return (
     <Container maxWidth="xl">
     <h1>Preguntas frecuentes</h1>
-    <Box maxWidth="xl">
+    <Box maxWidth="xl" data-testid="faqs-container">
     {faqsData.map((faq)=>
       <Accordion key={faq.id}>
 
@@ -25,7 +25,7 @@ const Faqs: NextPage = () => {
         <AccordionDetails>
           {faq.answer}
         </AccordionDetails>
-        
+
       </Accordion>
     )
   }
