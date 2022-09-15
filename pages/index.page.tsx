@@ -1,5 +1,6 @@
 import type {NextPage} from 'next'
 import Head from 'next/head'
+import Home from 'dh-marvel/components/home/home';
 import BodySingle from "dh-marvel/components/layouts/body/single/body-single";
 
 const Index: NextPage = () => {
@@ -11,7 +12,8 @@ const Index: NextPage = () => {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
 
-            <BodySingle title={"Sample"}>
+            <BodySingle title={"Comics"}>
+                <Home/>
             </BodySingle>
         </>
     )
