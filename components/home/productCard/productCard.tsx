@@ -8,16 +8,7 @@ import {
   Typography,
   CardActions,
 } from "@mui/material";
-
-export type Comic = {
-   id: number,
-   nombre: string,
-   imagen: string
-}
-
-export type ProductCardProps = {
-    comic: Comic
-}
+import { ProductCardProps } from "../types";
 
 const ProductCard: FC<ProductCardProps> = ({comic}) => {
   return (
