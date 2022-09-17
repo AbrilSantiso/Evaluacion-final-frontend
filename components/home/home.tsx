@@ -5,12 +5,13 @@ import { Comic, HomeProps } from "./types";
 import Grilla from "./grilla/Grilla";
 
 
+
 const Home: FC<HomeProps> = ({ comicsArray, totalPages }:HomeProps) => {
 
   const [comics, setComics] = useState<Comic[]>(comicsArray);
   const [page, setPage] = useState<number>(1);
-  
   const limit = 12;
+  
 
   useEffect(() => {
     async function fetchComics(){
@@ -18,8 +19,8 @@ const Home: FC<HomeProps> = ({ comicsArray, totalPages }:HomeProps) => {
       const params = new URLSearchParams();
       params.set("offset", offset.toString());
       params.set("limit", limit.toString());
-    
-      const comicsData = await fetch(`http://localhost:3000/api/comics?${params}`);
+      const origin = window.location.origin;
+      const comicsData = await fetch(`${origin}/api/comics?${params}`);
       const data = await comicsData.json();    
       setComics(data.data.data.results);
     }
