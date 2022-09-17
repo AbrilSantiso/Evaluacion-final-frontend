@@ -11,18 +11,21 @@ import {
 import { ProductCardProps } from "../types";
 
 const ProductCard: FC<ProductCardProps> = ({comic}) => {
+  
+  const image = `${comic.thumbnail.path}.${comic.thumbnail.extension}`
+  
   return (
-            <Card >
+            <Card sx={{ width: "400px", height:"400px" }}>
               <CardActionArea>
                 <CardMedia
                   component="img"
-                  height="194"
-                  image={comic.imagen}
-                  title="Contemplative Reptile"
+                  sx={{ width: "100%", height:"200px", objectFit: "contain" }}
+                  image={image}
+                  title={comic.title}
                 />
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {comic.nombre}
+                  <Typography sx={{ height:"80px", fontSize:"20px", }} gutterBottom variant="h5">
+                    {comic.title}
                   </Typography>
                 </CardContent>
               </CardActionArea>

@@ -1,9 +1,11 @@
-import type {NextPage} from 'next'
+import type {GetStaticProps, NextPage} from 'next'
 import Head from 'next/head'
 import Home from 'dh-marvel/components/home/home';
 import BodySingle from "dh-marvel/components/layouts/body/single/body-single";
+import { HomeProps } from 'dh-marvel/components/home/types';
+import { getComics } from 'dh-marvel/services/marvel/marvel.service';
 
-const Index: NextPage = () => {
+const Index: NextPage<HomeProps> = ({ comicsArray, totalPages }) => {
     return (
         <>
             <Head>
@@ -13,10 +15,22 @@ const Index: NextPage = () => {
             </Head>
 
             <BodySingle title={"Comics"}>
-                <Home/>
+                <Home comicsArray={comicsArray} totalPages={totalPages}/>
             </BodySingle>
         </>
     )
 }
+export const getStaticProps: GetStaticProps = async () => {
+    const data = await getComics(0, 12)
+    
+    return {
+      props: {
+        comicsArray: data.data.results,
+        totalPages: Math.ceil(data.data.total / 12)
+      },
+    };
+  };
+
+
 
 export default Index
