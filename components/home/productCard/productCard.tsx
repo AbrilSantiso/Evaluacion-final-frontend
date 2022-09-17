@@ -8,7 +8,8 @@ import {
   Typography,
   CardActions,
 } from "@mui/material";
-import { ProductCardProps } from "../types";
+import { ProductCardProps } from "../../../types";
+import Link from "next/link";
 
 const ProductCard: FC<ProductCardProps> = ({comic}) => {
   
@@ -33,9 +34,11 @@ const ProductCard: FC<ProductCardProps> = ({comic}) => {
                 <Button  color="primary">
                   Comprar
                 </Button>
+                <Link href={`/comics/${comic.id}`}>
                 <Button  color="primary">
                   Ver Detalle
                 </Button>
+                </Link>
               </CardActions>
             </Card>
   );

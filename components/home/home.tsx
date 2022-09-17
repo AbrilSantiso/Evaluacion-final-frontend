@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useState, useEffect } from "react";
 import { Pagination, Box } from "@mui/material";
-import { Comic, HomeProps } from "./types";
+import { Comic, HomeProps } from "../../types";
 import Grilla from "./grilla/Grilla";
 
 

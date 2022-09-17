@@ -2,7 +2,7 @@ import {
     Grid
   } from "@mui/material";
   import { FC } from "react"; 
-  import { GrillaProps } from "../types";
+  import { GrillaProps } from "../../../types";
   import ProductCard from "../productCard/productCard";
 
   const Grilla: FC<GrillaProps> = ({comics}) => {

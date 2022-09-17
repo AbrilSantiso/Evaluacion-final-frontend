@@ -2,7 +2,7 @@ import type {GetStaticProps, NextPage} from 'next'
 import Head from 'next/head'
 import Home from 'dh-marvel/components/home/home';
 import BodySingle from "dh-marvel/components/layouts/body/single/body-single";
-import { HomeProps } from 'dh-marvel/components/home/types';
+import { HomeProps } from 'types';
 import { getComics } from 'dh-marvel/services/marvel/marvel.service';
 
 const Index: NextPage<HomeProps> = ({ comicsArray, totalPages }) => {
