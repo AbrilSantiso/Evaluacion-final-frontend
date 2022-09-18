@@ -68,7 +68,7 @@ const ComicPage: NextPage<ComicPageProps> = ({ comic }) => {
             margin: "0 30px"
           }}
         />
-        <Card sx={{ width: "300px", padding: "16px" }}>
+        <Card sx={{ width: "300px", padding: "16px" }} variant="outlined">
           <Typography
             sx={{ fontSize: "1.5rem", width: "80%" }}
             gutterBottom
