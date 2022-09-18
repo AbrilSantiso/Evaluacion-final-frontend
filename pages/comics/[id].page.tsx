@@ -65,6 +65,7 @@ const ComicPage: NextPage<ComicPageProps> = ({ comic }) => {
             width: "300px",
             height: "350px",
             objectFit: "contain",
+            margin: "0 30px"
           }}
         />
         <Card sx={{ width: "300px", padding: "16px" }}>
