@@ -1,9 +1,6 @@
 import {
   Card,
   Button,
-  CardActionArea,
-  CardMedia,
-  CardContent,
   Typography,
   CardActions,
   Box,
@@ -13,7 +10,6 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import { ProductCardProps as ComicPageProps } from "types";
-import Image from "next/image";
 import { getComic } from "dh-marvel/services/marvel/marvel.service";
 import { GetServerSideProps, NextPage } from "next/types";
 import { ExpandMore } from "@mui/icons-material";
@@ -21,9 +17,7 @@ import Link from "next/link";
 
 const ComicPage: NextPage<ComicPageProps> = ({ comic }) => {
   const image = `${comic.thumbnail.path}.${comic.thumbnail.extension}`;
-  if (comic) {
-    console.log(comic);
-  }
+ 
   return (
     <Box
       sx={{

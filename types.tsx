@@ -22,6 +22,16 @@ export type Comic = {
     extension: string
  }
 
+ export type Character = {
+    name: string,
+    description: string,
+    thumbnail: Image
+ }
+
+ export type CharacterPageProps ={
+    character: Character
+ }
+ 
  export type ProductCardProps = {
      comic: Comic
  }
