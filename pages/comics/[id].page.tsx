@@ -132,7 +132,7 @@ const ComicPage: NextPage<ComicPageProps> = ({ comic }) => {
               : "Sin descripción disponible"}
           </AccordionDetails>
         </Accordion>
-        {comic.characters.items.length && (
+        {comic.characters.items.length > 0 && (
           <Accordion
             sx={{
               maxWidth: "700px",
