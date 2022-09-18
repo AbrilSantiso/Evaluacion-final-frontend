@@ -2,7 +2,7 @@ import type {GetStaticProps, NextPage} from 'next'
 import Head from 'next/head'
 import Home from 'dh-marvel/components/home/home';
 import BodySingle from "dh-marvel/components/layouts/body/single/body-single";
-import { HomeProps } from 'types';
+import { Comic, HomeProps } from 'types';
 import { getComics } from 'dh-marvel/services/marvel/marvel.service';
 
 const Index: NextPage<HomeProps> = ({ comicsArray, totalPages }) => {
@@ -21,7 +21,7 @@ const Index: NextPage<HomeProps> = ({ comicsArray, totalPages }) => {
     )
 }
 export const getStaticProps: GetStaticProps = async () => {
-    const data = await getComics(0, 12)
+    const data = await getComics(0, 12);
     
     return {
       props: {
@@ -31,6 +31,16 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   };
 
+  export async function getStaticPaths() {
+    const data = await getComics(0, 12);
+    const comics = data.data.results;
+    
+    const paths = comics.map((comic: Comic) => ({
+    params: { id: comic.id },
+    }));
+    
+    return { paths, fallback: "blocking" };
+    }
 
 
 export default Index
