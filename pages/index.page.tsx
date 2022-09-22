@@ -30,7 +30,7 @@ export const getStaticProps: GetStaticProps = async () => {
       },
     };
   };
-
+/*
   export async function getStaticPaths() {
     const data = await getComics(0, 12);
     const comics = data.data.results;
@@ -41,6 +41,6 @@ export const getStaticProps: GetStaticProps = async () => {
     
     return { paths, fallback: "blocking" };
     }
-
+*/
 
 export default Index
