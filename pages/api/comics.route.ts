@@ -15,6 +15,7 @@ export default async function handler(
         const resData = await getComics(offsetParsed, limitParsed );
       
           res.status(200).json({ data: resData });   
+          return
     }
     res.status(405).json({ error: 'method not supported' })
   }
