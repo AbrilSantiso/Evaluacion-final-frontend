@@ -19,7 +19,7 @@ const Home: FC<HomeProps> = ({ comicsArray, totalPages }:HomeProps) => {
       const params = new URLSearchParams();
       params.set("offset", offset.toString());
       params.set("limit", limit.toString());
-      const comicsData = await fetch(`api/comics?${params}`);
+      const comicsData = await fetch(`/api/comics?${params}`);
       const data = await comicsData.json();    
       setComics(data.data.data.results);
     }

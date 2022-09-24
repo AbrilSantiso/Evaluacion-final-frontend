@@ -1,17 +1,48 @@
+import TextFieldWrapper from '../textFieldWrapper';
 import { useForm } from 'react-hook-form';
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {Box, Button, Typography} from "@mui/material";
+import { FC, useEffect } from 'react';
 
-import {Box} from "@mui/material";
-import { FC } from 'react';
+export const personalInformationSchema = yup.object({
+    Nombre: yup.string().required('El nombre es requerido').min(3, 'El nombre debe tener minimo 3 caracteres'),
+    Apellido: yup.string().required('El apellido es requerido').min(3, 'El apellido debe tener minimo 3 caracteres'),
+    Email: yup.string().email("El email no tiene un formato válido").required('El email es requerido')
+}).required();
 
-const PersonalInformationForm:FC = () => {
+export type FormData = {
+    Nombre: string,
+    Apellido: string,
+    Email: string
+}
 
-    const {handleSubmit, control} = useForm();
-    const onSubmit = (data:any) => console.log(data);
+export type PersonalInformationFormProps = {
+    handleNext: () => void
+}
+
+const PersonalInformationForm:FC<PersonalInformationFormProps> = ({handleNext}:PersonalInformationFormProps) => {
+//PREGUNTAR COMO TIPAR EL CONTROL
+    const {handleSubmit, setFocus, control} = useForm({resolver: yupResolver(personalInformationSchema)});
+    
+    const onSubmit = (data:any) => {
+        handleNext();
+        console.log(data)
+    }
+        
+    useEffect(() => {
+        setFocus("Nombre");
+    },[])
 
     return (
         <Box sx={{width: '100%', display:"flex", flexDirection:"column", alignItems:"center"}}  component="form" onSubmit={handleSubmit(onSubmit)}>
-         
-            
+           <Typography variant='h4'>
+            Datos personales
+           </Typography>
+         <TextFieldWrapper control={control} name="Nombre" defaultValue={""}  />
+         <TextFieldWrapper control={control} name="Apellido" defaultValue={""}/>
+         <TextFieldWrapper control={control} name="Email" defaultValue={""} />
+         <Button type="submit">Seguir</Button>
         </Box>
     )
 }

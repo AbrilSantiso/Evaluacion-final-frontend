@@ -3,12 +3,13 @@ import { useController, UseControllerProps } from "react-hook-form";
  
 
  
-const TextFieldWrapper = ({control, name, defaultValue, rules}: UseControllerProps) =>{
+const TextFieldWrapper = ({control, name, defaultValue}: UseControllerProps) =>{
  
-const{field, fieldState} = useController({control, name, defaultValue, rules});
- 
+const{field, fieldState} = useController({control, name, defaultValue});
+
   return (
-      <TextField {...field} />
+      <TextField {...field} label={name}  error={!!fieldState.error}
+      helperText={`${fieldState.error?.message || ''}`}  />
   );
 }
 

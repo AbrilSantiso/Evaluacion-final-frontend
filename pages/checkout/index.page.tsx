@@ -1,4 +1,7 @@
 import {Box, Button, Step, StepLabel, Stepper} from "@mui/material";
+import AddressForm from "dh-marvel/components/forms/AddressForm";
+import PaymentForm from "dh-marvel/components/forms/PaymentForm";
+import PersonalInformationForm from "dh-marvel/components/forms/PersonalInformationForm";
 import { NextPage } from "next";
 import { useState} from "react";
 
@@ -30,7 +33,11 @@ const CheckoutPage: NextPage = () => {
                     <StepLabel>Datos del pago</StepLabel>
                 </Step>
             </Stepper>
-            
+
+           {activeStep === 0 && <PersonalInformationForm handleNext={handleNext}/>} 
+           {activeStep === 1 && <AddressForm handleNext={handleNext}/>} 
+           {activeStep === 2 && <PaymentForm handleNext={handleNext}/>} 
+
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
               color="inherit"
