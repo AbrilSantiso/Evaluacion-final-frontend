@@ -35,14 +35,16 @@ const PersonalInformationForm:FC<PersonalInformationFormProps> = ({handleNext}:P
     },[])
 
     return (
-        <Box sx={{width: '100%', display:"flex", flexDirection:"column", alignItems:"center"}}  component="form" onSubmit={handleSubmit(onSubmit)}>
-           <Typography variant='h4'>
+        <Box sx={{width: '90%', display:"flex", flexDirection:"column"}}  component="form" onSubmit={handleSubmit(onSubmit)}>
+           <Typography variant='h6'>
             Datos personales
            </Typography>
-         <TextFieldWrapper control={control} name="Nombre" defaultValue={""}  />
+         <TextFieldWrapper control={control} name="Nombre" defaultValue={""} />
          <TextFieldWrapper control={control} name="Apellido" defaultValue={""}/>
          <TextFieldWrapper control={control} name="Email" defaultValue={""} />
-         <Button type="submit">Seguir</Button>
+         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Button type="submit" variant='contained'>Seguir</Button>
+          </Box>
         </Box>
     )
 }

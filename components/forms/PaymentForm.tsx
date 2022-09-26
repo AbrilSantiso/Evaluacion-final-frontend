@@ -5,25 +5,27 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Typography } from "@mui/material";
 import { FC, useEffect } from 'react';
 
-export const personalInformationSchema = yup.object({
-    Firstname: yup.string().required('El nombre es requerido').min(3, 'El nombre debe tener minimo 3 caracteres'),
-    Surname: yup.string().required('El apellido es requerido').min(3, 'El apellido debe tener minimo 3 caracteres'),
-    Email: yup.string().email("El email no tiene un formato válido").required('El email es requerido')
+export const PaymentSchema = yup.object({
+    "Número de tarjeta": yup.string().required('El número de tarjeta es requerido').min(13, 'El número de tarjeta debe tener minimo 13 caracteres'),
+    "Nombre como aparece en la tarjeta": yup.string().required('El nombre es requerido').min(3, 'El nombre debe tener minimo 3 caracteres'),
+    "EXP MM/YY": yup.string().required('La fecha de expiración es requerida').length(5, "El formato de la fecha de expiración no es el correcto"),
+    CVV : yup.string().required('El código de seguridad es requerido').length(3, "El formato del código de seguridad no es el correcto")
 }).required();
 
 export type FormData = {
-    Firstname: string,
-    Surname: string,
-    Email: string
+    "Número de tarjeta": string,
+    "Nombre como aparece en la tarjeta": string,
+    "EXP MM/YY": string,
+    CVV: string
 }
 
-export type PersonalInformationFormProps = {
+export type PaymentFormProps = {
     handleNext: () => void
 }
 
-const PaymentForm: FC<PersonalInformationFormProps> = ({ handleNext }: PersonalInformationFormProps) => {
+const PaymentForm: FC<PaymentFormProps> = ({ handleNext }: PaymentFormProps) => {
     //PREGUNTAR COMO TIPAR EL CONTROL
-    const { handleSubmit, setFocus, control } = useForm({ resolver: yupResolver(personalInformationSchema) });
+    const { handleSubmit, setFocus, control } = useForm({ resolver: yupResolver(PaymentSchema) });
 
     const onSubmit = (data: any) => {
         handleNext();
@@ -31,18 +33,19 @@ const PaymentForm: FC<PersonalInformationFormProps> = ({ handleNext }: PersonalI
     }
 
     useEffect(() => {
-        setFocus("Firstname");
+        setFocus("Número de tarjeta");
     }, [])
 
     return (
-        <Box sx={{ width: '100%', display: "flex", flexDirection: "column", alignItems: "center" }} component="form" onSubmit={handleSubmit(onSubmit)}>
-            <Typography variant='h4'>
+        <Box sx={{ width: '100%', display: "flex", flexDirection: "column" }} component="form" onSubmit={handleSubmit(onSubmit)}>
+            <Typography variant='h6'>
                 Datos del pago           
                 </Typography>
-            <TextFieldWrapper control={control} name="Firstname" defaultValue={""} />
-            <TextFieldWrapper control={control} name="Surname" defaultValue={""} />
-            <TextFieldWrapper control={control} name="Email" defaultValue={""} />
-            <Button type="submit">Seguir</Button>
+            <TextFieldWrapper control={control} name="Número de tarjeta" defaultValue={""} />
+            <TextFieldWrapper control={control} name="Nombre como aparece en la tarjeta" defaultValue={""} />
+            <TextFieldWrapper control={control} name="EXP MM/YY" defaultValue={""} />
+            <TextFieldWrapper control={control} name="CVV" defaultValue={""} />
+            <Button type="submit">Finalizar</Button>
         </Box>
     )
 }

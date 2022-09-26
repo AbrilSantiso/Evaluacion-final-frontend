@@ -33,7 +33,8 @@ export type Comic = {
  }
  
  export type ProductCardProps = {
-     comic: Comic
+     comic: Comic,
+     isCheckout?: boolean
  }
 
  export type GrillaProps = {
