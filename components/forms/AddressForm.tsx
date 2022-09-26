@@ -1,5 +1,5 @@
 import TextFieldWrapper from '../textFieldWrapper';
-import { useForm } from 'react-hook-form';
+import { useForm,  FormProvider  } from 'react-hook-form';
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {Box, Button, Typography} from "@mui/material";
@@ -22,13 +22,17 @@ export type FormData = {
 }
 
 export type AddressFormProps = {
-    handleNext: () => void
+    handleNext: () => void,
+    handleBack: () => void
 }
 
-const AddressForm:FC<AddressFormProps> = ({handleNext}:AddressFormProps) => {
-//PREGUNTAR COMO TIPAR EL CONTROL
-    const {handleSubmit, setFocus, control} = useForm({resolver: yupResolver(addressSchema)});
-    
+const AddressForm:FC<AddressFormProps> = ({handleNext, handleBack}:AddressFormProps) => {
+
+    const methods = useForm<FormData>({
+        resolver: yupResolver(addressSchema)
+    });  
+    const { setFocus, handleSubmit} = methods;
+
     const onSubmit = (data:any) => {
         handleNext();
         console.log(data)
@@ -39,16 +43,21 @@ const AddressForm:FC<AddressFormProps> = ({handleNext}:AddressFormProps) => {
     },[])
 
     return (
-        <Box sx={{width: '100%', display:"flex", flexDirection:"column"}}  component="form" onSubmit={handleSubmit(onSubmit)}>
+        <Box sx={{width: '95%', display:"flex", flexDirection:"column"}}  component="form" onSubmit={handleSubmit(onSubmit)}>
            <Typography variant='h6'>
            Dirección de entrega
            </Typography>
-         <TextFieldWrapper control={control} name="Dirección" defaultValue={""}/>
-         <TextFieldWrapper control={control} name="Departamento" defaultValue={""} />
-         <TextFieldWrapper control={control} name="Ciudad" defaultValue={""} />
-         <TextFieldWrapper control={control} name="Provincia" defaultValue={""} />
-         <TextFieldWrapper control={control} name="Codigo Postal" defaultValue={""} />
-         <Button type="submit">Seguir</Button>
+           <FormProvider {...methods}>
+         <TextFieldWrapper  name="Dirección" defaultValue={""}/>
+         <TextFieldWrapper  name="Departamento" defaultValue={""} />
+         <TextFieldWrapper  name="Ciudad" defaultValue={""} />
+         <TextFieldWrapper  name="Provincia" defaultValue={""} />
+         <TextFieldWrapper  name="Codigo Postal" defaultValue={""} />
+         </FormProvider>
+         <Box sx={{ display: 'flex',width: '100%', justifyContent: "space-between"}}>
+            <Button  variant='outlined' onClick={handleBack}>Anterior</Button>
+            <Button type="submit" variant='contained'>Seguir</Button>
+          </Box>
         </Box>
     )
 }

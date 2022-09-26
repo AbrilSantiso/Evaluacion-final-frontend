@@ -1,5 +1,5 @@
 import TextFieldWrapper from '../textFieldWrapper';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Typography } from "@mui/material";
@@ -20,12 +20,16 @@ export type FormData = {
 }
 
 export type PaymentFormProps = {
-    handleNext: () => void
+    handleNext: () => void,
+    handleBack: () => void
 }
 
-const PaymentForm: FC<PaymentFormProps> = ({ handleNext }: PaymentFormProps) => {
-    //PREGUNTAR COMO TIPAR EL CONTROL
-    const { handleSubmit, setFocus, control } = useForm({ resolver: yupResolver(PaymentSchema) });
+const PaymentForm: FC<PaymentFormProps> = ({ handleNext, handleBack }: PaymentFormProps) => {
+    
+    const methods = useForm<FormData>({
+        resolver: yupResolver(PaymentSchema)
+    });  
+    const { setFocus, handleSubmit} = methods;
 
     const onSubmit = (data: any) => {
         handleNext();
@@ -37,15 +41,20 @@ const PaymentForm: FC<PaymentFormProps> = ({ handleNext }: PaymentFormProps) => 
     }, [])
 
     return (
-        <Box sx={{ width: '100%', display: "flex", flexDirection: "column" }} component="form" onSubmit={handleSubmit(onSubmit)}>
+        <Box sx={{ width: '95%', display: "flex", flexDirection: "column" }} component="form" onSubmit={handleSubmit(onSubmit)}>
             <Typography variant='h6'>
                 Datos del pago           
                 </Typography>
-            <TextFieldWrapper control={control} name="Número de tarjeta" defaultValue={""} />
-            <TextFieldWrapper control={control} name="Nombre como aparece en la tarjeta" defaultValue={""} />
-            <TextFieldWrapper control={control} name="EXP MM/YY" defaultValue={""} />
-            <TextFieldWrapper control={control} name="CVV" defaultValue={""} />
-            <Button type="submit">Finalizar</Button>
+                <FormProvider {...methods}>
+            <TextFieldWrapper  name="Número de tarjeta" defaultValue={""} />
+            <TextFieldWrapper  name="Nombre como aparece en la tarjeta" defaultValue={""} />
+            <TextFieldWrapper  name="EXP MM/YY" defaultValue={""} />
+            <TextFieldWrapper  name="CVV" defaultValue={""} />
+            </FormProvider>
+            <Box sx={{ display: 'flex',width: '100%', justifyContent: "space-between"}}>
+            <Button  onClick={handleBack} variant='outlined'>Anterior</Button>
+            <Button type="submit" variant='contained'>Seguir</Button>
+          </Box>
         </Box>
     )
 }

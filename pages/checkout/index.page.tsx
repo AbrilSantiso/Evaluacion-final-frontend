@@ -42,9 +42,9 @@ const CheckoutPage: NextPage = () => {
             </Step>
           </Stepper>
 
-          {activeStep === 0 && <PersonalInformationForm handleNext={handleNext} />}
-          {activeStep === 1 && <AddressForm handleNext={handleNext} />}
-          {activeStep === 2 && <PaymentForm handleNext={handleNext} />}
+          {activeStep === 0 && <PersonalInformationForm handleNext={handleNext}  />}
+          {activeStep === 1 && <AddressForm handleNext={handleNext} handleBack={handleBack}/>}
+          {activeStep === 2 && <PaymentForm handleNext={handleNext} handleBack={handleBack}/>}
         </Box>
       {<ProductCard comic={{
     "id": 331,
