@@ -1,4 +1,6 @@
 import { Box, Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
+import { useOrderContext } from "context/OrderContext";
+import { PersonalInfoContext, PersonalInfoStateType } from "context/PersonalInfoContext";
 import AddressForm from "dh-marvel/components/forms/AddressForm";
 import PaymentForm from "dh-marvel/components/forms/PaymentForm";
 import PersonalInformationForm from "dh-marvel/components/forms/PersonalInformationForm";
@@ -6,11 +8,18 @@ import ProductCard from "dh-marvel/components/home/productCard/productCard";
 import LayoutCheckout from "dh-marvel/components/layouts/layout-checkout";
 import { NextPage } from "next";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 
 const CheckoutPage: NextPage = () => {
 
+  const router = useRouter();
+  const {order} = useOrderContext();
+  
+
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfoStateType>();
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -20,45 +29,46 @@ const CheckoutPage: NextPage = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  return (
-    <Box sx={{ width: '100%', display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <Typography align="center" variant="h4">
-        Checkout:
-      </Typography>
-      <Box sx={{ width: '100%', display: "flex", alignItems: "center", flexWrap:"wrap", justifyContent:"center" }}>
-
-        <Box sx={{ width: '100%', display: "flex", flexDirection: "column", margin:"0 20px",  '@media (min-width:1400px)':{width: '70%'}}}>
-          <Stepper
-            sx={{ width: '90%', marginBottom: 2, marginTop: 4 }}
-            activeStep={activeStep}>
-            <Step>
-              <StepLabel>Datos personales</StepLabel>
-            </Step>
-            <Step>
-              <StepLabel>Dirección de entrega</StepLabel>
-            </Step>
-            <Step>
-              <StepLabel>Datos del pago</StepLabel>
-            </Step>
-          </Stepper>
-
-          {activeStep === 0 && <PersonalInformationForm handleNext={handleNext}  />}
-          {activeStep === 1 && <AddressForm handleNext={handleNext} handleBack={handleBack}/>}
-          {activeStep === 2 && <PaymentForm handleNext={handleNext} handleBack={handleBack}/>}
-        </Box>
-      {<ProductCard comic={{
-    "id": 331,
-    "title": "Gun Theory (2003) #4",
-            "price": 2,
-    "thumbnail": {
-        "path": "http://i.annihil.us/u/prod/marvel/i/mg/c/60/4bc69f11baf75",
-        "extension": "jpg"
-    }
-    
-}} isCheckout/>}  
+  if(!order){
+    return (
+      <Box sx={{ width: '100%', display: "flex", flexDirection: "column", alignItems: "center", height:"100%", justifyContent:"center" }}>
+        <Typography variant="h4" sx={{marginBottom:"30px"}}>No tienes ningún comic en tu carrito</Typography>
+      <Link href="/">Volver al home</Link>
       </Box>
+    )
+  }
+
+ return (
+   <Box sx={{ width: '100%', display: "flex", flexDirection: "column", alignItems: "center" }}>
+  <Typography align="center" variant="h4">
+    Checkout:
+  </Typography>
+  <Box sx={{ width: '100%', display: "flex", alignItems: "center", flexWrap:"wrap", justifyContent:"center" }}>
+
+    <Box sx={{ width: '100%', display: "flex", flexDirection: "column", margin:"0 20px",  '@media (min-width:1400px)':{width: '70%'}}}>
+      <Stepper
+        sx={{ width: '90%', marginBottom: 2, marginTop: 4 }}
+        activeStep={activeStep}>
+        <Step>
+          <StepLabel>Datos personales</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel>Dirección de entrega</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel>Datos del pago</StepLabel>
+        </Step>
+      </Stepper>
+      <PersonalInfoContext.Provider value={{personalInfo, setPersonalInfo}} >
+      {activeStep === 0 && <PersonalInformationForm handleNext={handleNext}  />}
+      {activeStep === 1 && <AddressForm handleNext={handleNext} handleBack={handleBack}/>}
+      {activeStep === 2 && <PaymentForm handleNext={handleNext} handleBack={handleBack}/>}
+      </PersonalInfoContext.Provider>
     </Box>
-  )
+   <ProductCard comic={order} isCheckout/> 
+  </Box>
+</Box> )
+  
 }
 (CheckoutPage as any).Layout = LayoutCheckout;
 export default CheckoutPage;

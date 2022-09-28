@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Typography } from "@mui/material";
 import { FC, useEffect } from 'react';
+import { PersonalInfoStateType, usePersonalInfoContext} from 'context/PersonalInfoContext';
 
 export const personalInformationSchema = yup.object({
     Nombre: yup.string().required('El nombre es requerido').min(3, 'El nombre debe tener minimo 3 caracteres'),
@@ -22,16 +23,19 @@ export type PersonalInformationFormProps = {
 }
 
 const PersonalInformationForm: FC<PersonalInformationFormProps> = ({ handleNext }: PersonalInformationFormProps) => {
-  
+    
+    const {personalInfo, setPersonalInfo: setPersonalInfoConContext} = usePersonalInfoContext();
+
     const methods = useForm<FormData>({
         resolver: yupResolver(personalInformationSchema)
     });
 
     const { setFocus, handleSubmit } = methods;
-
+   
+    
     const onSubmit = (data: any) => {
         handleNext();
-        console.log(data)
+        setPersonalInfoConContext(data)
     }
 
     useEffect(() => {

@@ -13,11 +13,21 @@ import { ProductCardProps as ComicPageProps } from "types";
 import { getComic } from "dh-marvel/services/marvel/marvel.service";
 import { GetServerSideProps, NextPage } from "next/types";
 import { ExpandMore } from "@mui/icons-material";
+import { useOrderContext } from "context/OrderContext";
 import Link from "next/link";
+import {useRouter} from "next/router";
 
 const ComicPage: NextPage<ComicPageProps> = ({ comic }) => {
+
   const image = `${comic.thumbnail.path}.${comic.thumbnail.extension}`;
- 
+
+  const {order, setOrder} = useOrderContext();
+  const router = useRouter();
+
+  const onClick=()=>{
+    setOrder(comic);
+    router.push("/checkout")
+  }
   return (
     <Box
       sx={{
@@ -91,6 +101,7 @@ const ComicPage: NextPage<ComicPageProps> = ({ comic }) => {
                 color="primary"
                 size="large"
                 fullWidth
+                onClick={onClick}
               >
                 Comprar
               </Button>
