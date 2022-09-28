@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {Box, Button, Typography} from "@mui/material";
 import { FC, useEffect } from 'react';
+import { useAddressInfoContext } from 'context/AddressInfoContext';
 
 export const addressSchema = yup.object({
     Dirección: yup.string().required('La Dirección es requerida'),
@@ -13,7 +14,7 @@ export const addressSchema = yup.object({
     "Codigo Postal": yup.string().required('El código postal es requerido')
 }).required();
 
-export type FormData = {
+export type AddressData = {
     Dirección: string,
     Departamento: string,
     Ciudad: string,
@@ -28,14 +29,16 @@ export type AddressFormProps = {
 
 const AddressForm:FC<AddressFormProps> = ({handleNext, handleBack}:AddressFormProps) => {
 
-    const methods = useForm<FormData>({
+    const {setAddressInfo} = useAddressInfoContext();
+
+    const methods = useForm<AddressData>({
         resolver: yupResolver(addressSchema)
     });  
     const { setFocus, handleSubmit} = methods;
 
     const onSubmit = (data:any) => {
         handleNext();
-        console.log(data)
+        setAddressInfo(data);
     }
         
     useEffect(() => {

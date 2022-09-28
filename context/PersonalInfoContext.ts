@@ -1,23 +1,13 @@
+import { PersonalInformationData } from "dh-marvel/components/forms/PersonalInformationForm"
 import { createContext, useContext } from "react"
 
 export type PersonalInfoContent = {
-  personalInfo: PersonalInfoStateType | undefined,
-  setPersonalInfo:(state: PersonalInfoStateType) => void
+  personalInfo: PersonalInformationData | undefined,
+  setPersonalInfo:(state: PersonalInformationData) => void
 }
-
-export type PersonalInfoStateType = {
-  nombre: string,
-    apellido:string,
-    email: string
-}
-
 
 export const PersonalInfoContext = createContext<PersonalInfoContent>({
-  personalInfo:{
-    nombre: "",
-    apellido: "",
-    email: ""
-  },
-  setPersonalInfo: (state: PersonalInfoStateType) => {}}
+  personalInfo: undefined,
+  setPersonalInfo: (state: PersonalInformationData) => {}}
 )
 export const usePersonalInfoContext = () => useContext(PersonalInfoContext)

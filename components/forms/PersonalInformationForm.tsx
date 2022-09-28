@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Typography } from "@mui/material";
 import { FC, useEffect } from 'react';
-import { PersonalInfoStateType, usePersonalInfoContext} from 'context/PersonalInfoContext';
+import {  usePersonalInfoContext} from 'context/PersonalInfoContext';
 
 export const personalInformationSchema = yup.object({
     Nombre: yup.string().required('El nombre es requerido').min(3, 'El nombre debe tener minimo 3 caracteres'),
@@ -12,7 +12,7 @@ export const personalInformationSchema = yup.object({
     Email: yup.string().email("El email no tiene un formato válido").required('El email es requerido')
 }).required();
 
-export type FormData = {
+export type PersonalInformationData = {
     Nombre: string,
     Apellido: string,
     Email: string
@@ -24,9 +24,9 @@ export type PersonalInformationFormProps = {
 
 const PersonalInformationForm: FC<PersonalInformationFormProps> = ({ handleNext }: PersonalInformationFormProps) => {
     
-    const {personalInfo, setPersonalInfo: setPersonalInfoConContext} = usePersonalInfoContext();
+    const {setPersonalInfo: setPersonalInfoConContext} = usePersonalInfoContext();
 
-    const methods = useForm<FormData>({
+    const methods = useForm<PersonalInformationData>({
         resolver: yupResolver(personalInformationSchema)
     });
 

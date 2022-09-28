@@ -12,7 +12,7 @@ import { ProductCardProps } from "../../../types";
 import Link from "next/link";
 
 const ProductCard: FC<ProductCardProps> = ({comic, isCheckout}) => {
-  console.log(comic)
+ 
   const image = `${comic.thumbnail.path}.${comic.thumbnail.extension}`
   
   return (

@@ -1,25 +1,25 @@
 import { Box, Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import { useOrderContext } from "context/OrderContext";
-import { PersonalInfoContext, PersonalInfoStateType } from "context/PersonalInfoContext";
-import AddressForm from "dh-marvel/components/forms/AddressForm";
+import { PersonalInfoContext } from "context/PersonalInfoContext";
+import AddressForm, { AddressData } from "dh-marvel/components/forms/AddressForm";
 import PaymentForm from "dh-marvel/components/forms/PaymentForm";
-import PersonalInformationForm from "dh-marvel/components/forms/PersonalInformationForm";
+import PersonalInformationForm, { PersonalInformationData } from "dh-marvel/components/forms/PersonalInformationForm";
 import ProductCard from "dh-marvel/components/home/productCard/productCard";
 import LayoutCheckout from "dh-marvel/components/layouts/layout-checkout";
 import { NextPage } from "next";
 import { useState } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
+import { AddressInfoContext } from "context/AddressInfoContext";
 
 
 const CheckoutPage: NextPage = () => {
 
-  const router = useRouter();
   const {order} = useOrderContext();
-  
 
   const [activeStep, setActiveStep] = useState<number>(0);
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfoStateType>();
+  const [personalInfo, setPersonalInfo] = useState<PersonalInformationData>();
+  const [addressInfo, setAddressInfo] = useState<AddressData>();
+
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -59,16 +59,17 @@ const CheckoutPage: NextPage = () => {
           <StepLabel>Datos del pago</StepLabel>
         </Step>
       </Stepper>
+      <AddressInfoContext.Provider value={{addressInfo, setAddressInfo}} >
       <PersonalInfoContext.Provider value={{personalInfo, setPersonalInfo}} >
       {activeStep === 0 && <PersonalInformationForm handleNext={handleNext}  />}
       {activeStep === 1 && <AddressForm handleNext={handleNext} handleBack={handleBack}/>}
       {activeStep === 2 && <PaymentForm handleNext={handleNext} handleBack={handleBack}/>}
       </PersonalInfoContext.Provider>
+      </AddressInfoContext.Provider>
     </Box>
    <ProductCard comic={order} isCheckout/> 
   </Box>
 </Box> )
-  
 }
 (CheckoutPage as any).Layout = LayoutCheckout;
 export default CheckoutPage;
