@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Typography } from "@mui/material";
 import { FC, useEffect } from 'react';
-import { usePersonalInfoContext } from 'context/PersonalInfoContext';
+import { usePaymentInfoContext } from 'context/PaymentInfoContext';
 
 export const PaymentSchema = yup.object({
     "Número de tarjeta": yup.string().required('El número de tarjeta es requerido').min(13, 'El número de tarjeta debe tener minimo 13 caracteres'),
@@ -13,7 +13,7 @@ export const PaymentSchema = yup.object({
     CVV : yup.string().required('El código de seguridad es requerido').length(3, "El formato del código de seguridad no es el correcto")
 }).required();
 
-export type FormData = {
+export type PaymentInformationData = {
     "Número de tarjeta": string,
     "Nombre como aparece en la tarjeta": string,
     "EXP MM/YY": string,
@@ -26,16 +26,17 @@ export type PaymentFormProps = {
 }
 
 const PaymentForm: FC<PaymentFormProps> = ({ handleNext, handleBack }: PaymentFormProps) => {
-    const {personalInfo} = usePersonalInfoContext();
-    console.log(personalInfo)
-    const methods = useForm<FormData>({
+
+    const {setPaymentInfo} = usePaymentInfoContext();
+
+    const methods = useForm<PaymentInformationData>({
         resolver: yupResolver(PaymentSchema)
     });  
     const { setFocus, handleSubmit} = methods;
 
     const onSubmit = (data: any) => {
+        setPaymentInfo(data);
         handleNext();
-        console.log(data)
     }
 
     useEffect(() => {
