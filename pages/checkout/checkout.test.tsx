@@ -1,9 +1,10 @@
 import {render, screen} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { useOrderContext } from 'context/OrderContext';
-import { PersonalInformationData, PersonalInformationFormProps } from 'dh-marvel/components/forms/PersonalInformationForm';
+import {useOrderContext} from 'dh-marvel/context/OrderContext';
+import {
+    PersonalInformationData,
+    PersonalInformationFormProps
+} from 'dh-marvel/components/forms/PersonalInformationForm';
 import CheckoutPage from './index.page';
-import { OrderContext } from 'context/OrderContext';
 
 const submittedData: PersonalInformationData = {
     Email: 'abru@a.com',
@@ -13,7 +14,7 @@ const submittedData: PersonalInformationData = {
 const mockPersonalInfoFormProps = jest.fn();
 
 jest.mock('dh-marvel/components/forms/PersonalInformationForm', () => jest.fn((props: PersonalInformationFormProps) => {
- 
+
     mockPersonalInfoFormProps(props);
 
     // Renderizamos un mock (lo mas simple que se pueda)
@@ -46,36 +47,32 @@ const order = {
     id: 1,
     title: "Hulk",
     thumbnail: {
-      path: "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.",
-      extension: "jpg"
+        path: "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.",
+        extension: "jpg"
     },
     description: "description",
     price: 3,
     oldPrice: 4,
     stock: 5,
     characters: {
-      available: 0,
-      items: []
+        available: 0,
+        items: []
     }
-  }
+}
 
 const mockUseOrder = useOrderContext as jest.MockedFunction<typeof useOrderContext>
 
 mockUseOrder.mockReturnValue({
-    order: order ,
+    order: order,
     setOrder: setOrderMock
 })
-
-
 
 
 describe('CheckoutPage', () => {
     describe('when rendering default form', () => {
         it('should render the step 0 with the Personal Information Form', () => {
             render(
-                <OrderContext.Provider value={mockUseOrder()}>
-            <CheckoutPage/>
-            </OrderContext.Provider>
+                <CheckoutPage/>
             )
             const form = screen.getByText('Información Personal')
             expect(form).toBeInTheDocument()
