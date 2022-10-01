@@ -39,7 +39,6 @@ const CheckoutPage: NextPage = () => {
     };
     if (error) {
       setOpen(true)
-      console.log(paymentInfo)
     };
   }, [error, succes])
 

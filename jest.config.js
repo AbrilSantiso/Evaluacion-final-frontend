@@ -17,6 +17,8 @@ const customJestConfig = {
         '^dh-marvel/services/(.*)$': '<rootDir>/services/$1',
         '^dh-marvel/pages/(.*)$': '<rootDir>/pages/$1',
         '^dh-marvel/test/(.*)$': '<rootDir>/test/$1',
+        '^dh-marvel/context/(.*)$': '<rootDir>/context/$1',
+        
     },
     testEnvironment: 'jest-environment-jsdom',
     collectCoverageFrom: [
