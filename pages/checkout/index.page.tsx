@@ -1,66 +1,98 @@
 import { Alert, Box, Button, Snackbar, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import { useOrderContext } from "context/OrderContext";
-import { PersonalInfoContext, usePersonalInfoContext } from "context/PersonalInfoContext";
-import AddressForm, { AddressData } from "dh-marvel/components/forms/AddressForm";
+import {  usePersonalInfoContext } from "context/PersonalInfoContext";
+import AddressForm from "dh-marvel/components/forms/AddressForm";
 import PaymentForm, { PaymentInformationData } from "dh-marvel/components/forms/PaymentForm";
-import PersonalInformationForm, { PersonalInformationData } from "dh-marvel/components/forms/PersonalInformationForm";
+import PersonalInformationForm from "dh-marvel/components/forms/PersonalInformationForm";
 import ProductCard from "dh-marvel/components/home/productCard/productCard";
 import LayoutCheckout from "dh-marvel/components/layouts/layout-checkout";
 import { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AddressInfoContext, useAddressInfoContext } from "context/AddressInfoContext";
-import { PaymentInfoContext, usePaymentInfoContext } from "context/PaymentInfoContext";
+import { useAddressInfoContext } from "context/AddressInfoContext";
+import { useRouter } from 'next/router'
 
 
 
 const CheckoutPage: NextPage = () => {
 
   const { order: orderInfo } = useOrderContext();
-  const { paymentInfo: paymentInformation } = usePaymentInfoContext();
-  const { personalInfo: personalInformation } = usePersonalInfoContext();
-  const { addressInfo: addressInformation } = useAddressInfoContext();
+  const { personalInfo } = usePersonalInfoContext();
+  const { addressInfo} = useAddressInfoContext();
+
+  const router = useRouter();
 
   const [activeStep, setActiveStep] = useState<number>(0);
-  const [personalInfo, setPersonalInfo] = useState<PersonalInformationData>();
-  const [addressInfo, setAddressInfo] = useState<AddressData>();
-  const [paymentInfo, setPaymentInfo] = useState<PaymentInformationData>();
   const [error, setError] = useState<string>();
+  const [succes, setSucces] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [paymentInfo,  setPaymentInfo] = useState<PaymentInformationData>();
+
+  const handleChangePaymentInfo = (paymentInformation: PaymentInformationData) => {
+    setPaymentInfo(paymentInformation)
+  }
+
+  useEffect(() => {
+    if (succes) {
+      router.push("/confirmacion-compra")
+      return
+    };
+    if (error) {
+      setOpen(true)
+      console.log(paymentInfo)
+    };
+  }, [error, succes])
+
+  useEffect(() => {
+    if (paymentInfo) {
+      onSubmit();
+    };
+    
+  }, [paymentInfo])
 
 
   const onSubmit = async () => {
-
-    fetchCheckout().then(()=>{
-      console.log(error)
-      if(error){
-        setOpen(true)
-      }
-
-    })
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1)
+    fetchCheckout();
   }
+
+  const translateErrors = (error: string) => {
+    switch (error) {
+      case 'INCORRECT_ADDRESS':
+        setError("Dirección de entrega incorrecta");
+        break;
+      case 'CARD_WITHOUT_FUNDS':
+        setError("Tarjeta sin fondos disponibles");
+        break;
+      case 'CARD_WITHOUT_AUTHORIZATION':
+        setError("Tarjeta sin autorización. Comuníquese con su banco e intente nuevamente.")
+        break;
+      case 'CARD_DATA_INCORRECT':
+        setError("Datos de tarjeta incorrecta");
+        break;
+      default:
+        setError("Error de servidor. Intente nuevamente")
+    }
+  };
 
   const fetchCheckout = async () => {
     const checkoutData = {
       customer: {
-        name: personalInformation?.Nombre,
-        lastname: personalInformation?.Apellido,
-        email: personalInformation?.Email,
+        name: personalInfo?.Nombre,
+        lastname: personalInfo?.Apellido,
+        email: personalInfo?.Email,
         address: {
-          address1: addressInformation?.Dirección,
-          address2: addressInformation?.Departamento,
-          city: addressInformation?.Ciudad,
-          state: addressInformation?.Provincia,
-          zipCode: addressInformation?.["Codigo Postal"]
+          address1: addressInfo?.Dirección,
+          address2: addressInfo?.Departamento,
+          city: addressInfo?.Ciudad,
+          state: addressInfo?.Provincia,
+          zipCode: addressInfo?.["Codigo Postal"]
         },
       },
       card: {
-        number: paymentInformation?.["Número de tarjeta"],
-        cvc: paymentInformation?.CVV,
-        expDate: paymentInformation?.["EXP MM/YY"],
-        nameOnCard: paymentInformation?.["Nombre como aparece en la tarjeta"]
+        number: paymentInfo?.["Número de tarjeta"],
+        cvc: paymentInfo?.CVV,
+        expDate: paymentInfo?.["EXP MM/YY"],
+        nameOnCard: paymentInfo?.["Nombre como aparece en la tarjeta"]
       },
       order: {
         name: orderInfo?.title,
@@ -76,7 +108,9 @@ const CheckoutPage: NextPage = () => {
     }).then(async (res) => {
       if (res.status !== 200) {
         let data = await res.json()
-        setError(data.message)
+        translateErrors(data.error)
+      } else {
+        setSucces(true);
       }
     })
   }
@@ -119,19 +153,13 @@ const CheckoutPage: NextPage = () => {
               <StepLabel>Datos del pago</StepLabel>
             </Step>
           </Stepper>
-          <PaymentInfoContext.Provider value={{ paymentInfo, setPaymentInfo }} >
-            <AddressInfoContext.Provider value={{ addressInfo, setAddressInfo }} >
-              <PersonalInfoContext.Provider value={{ personalInfo, setPersonalInfo }} >
                 {activeStep === 0 && <PersonalInformationForm handleNext={handleNext} />}
                 {activeStep === 1 && <AddressForm handleNext={handleNext} handleBack={handleBack} />}
-                {activeStep === 2 && <PaymentForm handleNext={onSubmit} handleBack={handleBack} />}
-              </PersonalInfoContext.Provider>
-            </AddressInfoContext.Provider>
-          </PaymentInfoContext.Provider>
+                {activeStep === 2 && <PaymentForm  handleBack={handleBack} handleNext={handleChangePaymentInfo}/>}
         </Box>
         <ProductCard comic={orderInfo} isCheckout />
-        <Snackbar open={open} autoHideDuration={6000} onClose={()=>{setOpen(false)}}>
-          <Alert onClose={()=>{setOpen(false)}} severity="error" sx={{ width: '100%' }}>
+        <Snackbar open={open} autoHideDuration={6000} onClose={() => { setOpen(false) }}>
+          <Alert onClose={() => { setOpen(false) }} severity="error" sx={{ width: '100%' }}>
             {error}
           </Alert>
         </Snackbar>

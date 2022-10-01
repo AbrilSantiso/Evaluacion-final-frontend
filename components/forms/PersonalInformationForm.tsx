@@ -34,8 +34,8 @@ const PersonalInformationForm: FC<PersonalInformationFormProps> = ({ handleNext 
    
     
     const onSubmit = (data: any) => {
-        handleNext();
         setPersonalInfoConContext(data)
+        handleNext();
     }
 
     useEffect(() => {

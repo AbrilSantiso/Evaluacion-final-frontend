@@ -37,8 +37,8 @@ const AddressForm:FC<AddressFormProps> = ({handleNext, handleBack}:AddressFormPr
     const { setFocus, handleSubmit} = methods;
 
     const onSubmit = (data:any) => {
-        handleNext();
         setAddressInfo(data);
+        handleNext();
     }
         
     useEffect(() => {
