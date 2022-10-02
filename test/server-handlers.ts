@@ -5,7 +5,8 @@ import comic from "dh-marvel/test/mocks/comic";
 import comicsWithOffsetAndLimit from "dh-marvel/test/mocks/comicsWithOffsetAndLimit";
 import comicWithoutStock from "dh-marvel/test/mocks/comicWithoutStock";
 
-const handlers = [
+const handlers: any = [
+    
     rest.get('/marvel/api/comics', async (req, res, ctx) => {
         const query = req.url.searchParams;
         if (query.get('offset') === '10' && query.get('limit') === '5') {
@@ -24,6 +25,17 @@ const handlers = [
         if (id === "1") return res(ctx.json({data: {results: [character]}}))
         return res(ctx.json({data: {results: []}}))
     }),
+    rest.post('/api/checkout', (req, res, ctx) => {
+
+        return res(
+          
+          ctx.status(400),
+          ctx.json({
+              error: 'CARD_DATA_INCORRECT',
+              message: "The card data is not valid. Please review your data and submit it again"
+            }),
+        )
+      })
 ]
 
 export {handlers}

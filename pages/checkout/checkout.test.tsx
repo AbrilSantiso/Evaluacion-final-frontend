@@ -13,6 +13,14 @@ import CheckoutPage from './index.page';
 import userEvent from '@testing-library/user-event';
 import { AddressFormProps } from 'dh-marvel/components/forms/AddressForm';
 import { PaymentFormProps, PaymentInformationData } from 'dh-marvel/components/forms/PaymentForm';
+import { server } from 'dh-marvel/test/server';
+
+
+beforeAll(() => server.listen())
+
+afterEach(() => server.resetHandlers())
+
+afterAll(() => server.close())
 
 /* Mock Step 1: Personal Information Form */
 
@@ -54,11 +62,13 @@ const paymentData: PaymentInformationData = {
 jest.mock('dh-marvel/components/forms/PaymentForm', () => jest.fn((props: PaymentFormProps) => {
 
     mockPaymentInfoFormProps(props);
+    
     return <div>
         Payment Form
         <button onClick={() => props.handleBack()}>Anterior</button>
        <button onClick={() => props.handleNext(paymentData)}>Siguiente</button>
     </div>
+
 }))
 
 
@@ -222,20 +232,22 @@ describe('CheckoutPage', () => {
     })
 
     describe('when clicking the "Siguiente" button on PaymentInfo form', () => {
-        it('should redirect to Confirmation Order page', async () => {
+        it('should render an error message if the credit card info is not correct', async () => {
             render(<CheckoutPage />)
             const PersonalInfoform = screen.getByText('Información Personal');
             await userEvent.click(PersonalInfoform);
-
-            const AddressInfoForm = screen.getByText('Formulario de dirección de entrega');
-
-            expect(AddressInfoForm).toBeInTheDocument();
 
             const nextButton = screen.getByText('Siguiente')
 
             await userEvent.click(nextButton);
 
-            expect(AddressInfoForm).not.toBeInTheDocument();
+            expect(await screen.findByText('Payment Form')).toBeInTheDocument();
+
+            const nextButtonOnPaymentScreen = screen.getByText('Siguiente')
+
+            await userEvent.click(nextButtonOnPaymentScreen); 
+
+            expect(await screen.findByText("Datos de tarjeta incorrecta")).toBeInTheDocument();
         })
 
        
