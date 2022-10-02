@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {Box, Button, Typography} from "@mui/material";
 import { FC, useEffect } from 'react';
-import { useAddressInfoContext } from 'context/AddressInfoContext';
+import { useAddressInfoContext } from 'dh-marvel/context/AddressInfoContext';
 
 export const addressSchema = yup.object({
     Dirección: yup.string().required('La Dirección es requerida'),

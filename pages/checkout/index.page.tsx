@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Snackbar, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import { useOrderContext } from "dh-marvel/context/OrderContext";
-import {  usePersonalInfoContext } from "context/PersonalInfoContext";
+import {  usePersonalInfoContext } from "dh-marvel/context/PersonalInfoContext";
 import AddressForm from "dh-marvel/components/forms/AddressForm";
 import PaymentForm, { PaymentInformationData } from "dh-marvel/components/forms/PaymentForm";
 import PersonalInformationForm from "dh-marvel/components/forms/PersonalInformationForm";
@@ -9,7 +9,7 @@ import LayoutCheckout from "dh-marvel/components/layouts/layout-checkout";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useAddressInfoContext } from "context/AddressInfoContext";
+import { useAddressInfoContext } from "dh-marvel/context/AddressInfoContext";
 import { useRouter } from 'next/router'
 
 

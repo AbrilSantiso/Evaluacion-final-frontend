@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Typography } from "@mui/material";
 import { FC, useEffect } from 'react';
-import {  usePersonalInfoContext} from 'context/PersonalInfoContext';
+import {  usePersonalInfoContext} from 'dh-marvel/context/PersonalInfoContext';
 
 export const personalInformationSchema = yup.object({
     Nombre: yup.string().required('El nombre es requerido').min(3, 'El nombre debe tener minimo 3 caracteres'),
