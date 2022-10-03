@@ -510,7 +510,7 @@ describe('CheckoutPage', () => {
         })
 
 
-        it('should redirect to the Confirmation Order page if the credit card info is correct', async () => {
+        it('should call useRouter.push() if the credit card info is correct', async () => {
 
             render(<CheckoutPage />)
             const PersonalInfoform = screen.getByText('Información Personal');
