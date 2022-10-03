@@ -6,7 +6,7 @@ import {
 } from 'dh-marvel/context/AddressInfoContext';
 
 import {
-    PersonalInformationData,
+
     PersonalInformationFormProps
 } from 'dh-marvel/components/forms/PersonalInformationForm';
 import CheckoutPage from './index.page';
@@ -14,6 +14,7 @@ import userEvent from '@testing-library/user-event';
 import { AddressFormProps } from 'dh-marvel/components/forms/AddressForm';
 import { PaymentFormProps, PaymentInformationData } from 'dh-marvel/components/forms/PaymentForm';
 import { server } from 'dh-marvel/test/server';
+import { useRouter } from 'next/router'
 
 
 beforeAll(() => server.listen())
@@ -22,6 +23,18 @@ afterEach(() => server.resetHandlers())
 
 afterAll(() => server.close())
 
+/*------ Mock Router ---- */
+jest.mock("next/router",()  => ({    
+    useRouter: jest.fn(() => {
+        return {
+            route: "/",
+            pathname: "/",
+            query: {},
+            asPath: "/",
+            push: jest.fn()          
+        }
+    })
+}));
 /* Mock Step 1: Personal Information Form */
 
 const mockPersonalInfoFormProps = jest.fn();
@@ -52,21 +65,47 @@ jest.mock('dh-marvel/components/forms/AddressForm', () => jest.fn((props: Addres
 
 const mockPaymentInfoFormProps = jest.fn();
 
-const paymentData: PaymentInformationData = {
-    "Número de tarjeta": "1111111111111111",
-     "Nombre como aparece en la tarjeta": "Abril",
-     "EXP MM/YY": "11/11",
-     CVV: "123"
-}
-
 jest.mock('dh-marvel/components/forms/PaymentForm', () => jest.fn((props: PaymentFormProps) => {
 
     mockPaymentInfoFormProps(props);
-    
+
+    const incorrectPaymentData: PaymentInformationData = {
+        "Número de tarjeta": "1111111111111111",
+        "Nombre como aparece en la tarjeta": "Abril",
+        "EXP MM/YY": "11/11",
+        CVV: "123"
+    }
+
+    const withoutFundsCard: PaymentInformationData = {
+        "Número de tarjeta":  '4111 4111 4111 4111'.replace(" ", ""),
+        "Nombre como aparece en la tarjeta": "Abril",
+        "EXP MM/YY": "11/11",
+        CVV: "123"
+    }
+
+    const withoutAuthorizationCard: PaymentInformationData = {
+        "Número de tarjeta":  '4000 4000 4000 4000'.replace(" ", ""),
+        "Nombre como aparece en la tarjeta": "Abril",
+        "EXP MM/YY": "11/11",
+        CVV: "123"
+    }
+
+    const correctPaymentData: PaymentInformationData = {
+        "Número de tarjeta": "4242424242424242",
+        "Nombre como aparece en la tarjeta": "Abril",
+        "EXP MM/YY": "11/11",
+        CVV: "123"
+    }
+
+    const { order } = useOrderContext();
+
+    const paymentData = order?.title === "Hulk Comic" ? incorrectPaymentData : order?.title === "withoutFundsCard" ? withoutFundsCard : order?.title === "withoutAuthorizationCard" ? withoutAuthorizationCard :  correctPaymentData;
+
+
     return <div>
         Payment Form
         <button onClick={() => props.handleBack()}>Anterior</button>
-       <button onClick={() => props.handleNext(paymentData)}>Siguiente</button>
+        <button onClick={() => props.handleNext(paymentData)}>Siguiente</button>
     </div>
 
 }))
@@ -97,11 +136,6 @@ const order = {
 jest.mock("dh-marvel/context/OrderContext");
 
 const mockUseOrder = useOrderContext as jest.MockedFunction<typeof useOrderContext>
-
-mockUseOrder.mockReturnValue({
-    order: order,
-    setOrder: setOrderMock
-})
 
 
 /*- ---------- Personal Information Context ------------*/
@@ -138,7 +172,25 @@ mockUseAddressInfo.mockReturnValue({
 
 describe('CheckoutPage', () => {
     describe('when rendering default form', () => {
+        it('should render a message with "No hay comics en tu carrito" text', () => {
+            mockUseOrder.mockReturnValue({
+                order: undefined,
+                setOrder: setOrderMock
+            })
+            render(
+                <CheckoutPage />
+            )
+            const message = screen.getByText('No tienes ningún comic en tu carrito')
+            expect(message).toBeInTheDocument()
+
+        })
+    })
+    describe('when rendering default form', () => {
         it('should render the step 0 with the Personal Information Form', () => {
+            mockUseOrder.mockReturnValue({
+                order: order,
+                setOrder: setOrderMock
+            })
             render(
                 <CheckoutPage />
             )
@@ -154,6 +206,10 @@ describe('CheckoutPage', () => {
     })
     describe('when submitting register form', () => {
         it('should not render RegisterForm', async () => {
+            mockUseOrder.mockReturnValue({
+                order: order,
+                setOrder: setOrderMock
+            })
             render(<CheckoutPage />)
             const form = screen.getByText('Información Personal')
             await userEvent.click(form);
@@ -168,6 +224,10 @@ describe('CheckoutPage', () => {
     })
 
     describe('when clicking the "Anterior" button on AddressInfo form', () => {
+        mockUseOrder.mockReturnValue({
+            order: order,
+            setOrder: setOrderMock
+        })
         it('should not render AdressInfo form anymore', async () => {
             render(<CheckoutPage />)
             const PersonalInfoform = screen.getByText('Información Personal')
@@ -183,6 +243,10 @@ describe('CheckoutPage', () => {
         })
 
         it('should  render the PersonalInformation Form again', async () => {
+            mockUseOrder.mockReturnValue({
+                order: order,
+                setOrder: setOrderMock
+            })
             render(<CheckoutPage />)
             const PersonalInfoform = screen.getByText('Información Personal')
             await userEvent.click(PersonalInfoform);
@@ -199,6 +263,10 @@ describe('CheckoutPage', () => {
     })
 
     describe('when clicking the "Siguiente" button on AddressInfo form', () => {
+        mockUseOrder.mockReturnValue({
+            order: order,
+            setOrder: setOrderMock
+        })
         it('should not render AdressInfo form anymore', async () => {
             render(<CheckoutPage />)
             const PersonalInfoform = screen.getByText('Información Personal');
@@ -216,6 +284,10 @@ describe('CheckoutPage', () => {
         })
 
         it('should render the Payment form', async () => {
+            mockUseOrder.mockReturnValue({
+                order: order,
+                setOrder: setOrderMock
+            })
             render(<CheckoutPage />)
             const PersonalInfoform = screen.getByText('Información Personal');
             await userEvent.click(PersonalInfoform);
@@ -225,14 +297,34 @@ describe('CheckoutPage', () => {
             const nextButton = screen.getByText('Siguiente')
 
             await userEvent.click(nextButton);
-            
+
             expect(AddressInfoForm).not.toBeInTheDocument();
             expect(await screen.findByText('Payment Form')).toBeInTheDocument();
-        })        
+        })
     })
 
     describe('when clicking the "Siguiente" button on PaymentInfo form', () => {
+
         it('should render an error message if the credit card info is not correct', async () => {
+            mockUseOrder.mockReturnValue({
+                order: {
+                    id: 1,
+                    title: "Hulk Comic",
+                    thumbnail: {
+                        path: "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.",
+                        extension: "jpg"
+                    },
+                    description: "description",
+                    price: 3,
+                    oldPrice: 4,
+                    stock: 5,
+                    characters: {
+                        available: 0,
+                        items: []
+                    }
+                },
+                setOrder: setOrderMock
+            })
             render(<CheckoutPage />)
             const PersonalInfoform = screen.getByText('Información Personal');
             await userEvent.click(PersonalInfoform);
@@ -245,39 +337,198 @@ describe('CheckoutPage', () => {
 
             const nextButtonOnPaymentScreen = screen.getByText('Siguiente')
 
-            await userEvent.click(nextButtonOnPaymentScreen); 
+            await userEvent.click(nextButtonOnPaymentScreen);
 
             expect(await screen.findByText("Datos de tarjeta incorrecta")).toBeInTheDocument();
         })
 
-       
+        it('should render an error message if the address info is not correct', async () => {
+            mockUseOrder.mockReturnValue({
+                order: order,
+                setOrder: setOrderMock
+            })
+
+            mockUseAddressInfo.mockReturnValue({
+                addressInfo: {
+                  Dirección: "9 de julio",
+                  Departamento: "invalid",
+                  Ciudad: "Tigre",
+                  Provincia: "Buenos Aires",
+                  "Codigo Postal": "123"
+                },
+                setAddressInfo: setAddressInfoMock
+            })
+            render(<CheckoutPage />)
+            const PersonalInfoform = screen.getByText('Información Personal');
+            await userEvent.click(PersonalInfoform);
+
+            const nextButton = screen.getByText('Siguiente')
+
+            await userEvent.click(nextButton);
+
+            expect(await screen.findByText('Payment Form')).toBeInTheDocument();
+
+            const nextButtonOnPaymentScreen = screen.getByText('Siguiente')
+
+            await userEvent.click(nextButtonOnPaymentScreen);
+
+            expect(await screen.findByText("Dirección de entrega incorrecta")).toBeInTheDocument();
+        })
+
+        it('should render a server error message if the address info is not correct', async () => {
+            mockUseOrder.mockReturnValue({
+                order: order,
+                setOrder: setOrderMock
+            })
+
+            mockUseAddressInfo.mockReturnValue({
+                addressInfo: {
+                  Dirección: "9 de julio",
+                  Departamento: "error del servidor",
+                  Ciudad: "Tigre",
+                  Provincia: "Buenos Aires",
+                  "Codigo Postal": "123"
+                },
+                setAddressInfo: setAddressInfoMock
+            })
+            render(<CheckoutPage />)
+            const PersonalInfoform = screen.getByText('Información Personal');
+            await userEvent.click(PersonalInfoform);
+
+            const nextButton = screen.getByText('Siguiente')
+
+            await userEvent.click(nextButton);
+
+            expect(await screen.findByText('Payment Form')).toBeInTheDocument();
+
+            const nextButtonOnPaymentScreen = screen.getByText('Siguiente')
+
+            await userEvent.click(nextButtonOnPaymentScreen);
+            
+            expect(await screen.findByTestId("error-bar")).toBeInTheDocument();
+            expect(await screen.findByText("Error de servidor. Intente nuevamente")).toBeInTheDocument();
+        })
+
+        it('should render an error message if the card does not have funds', async () => {
+
+            mockUseAddressInfo.mockReturnValue({
+                addressInfo: {
+                  Dirección: "9 de julio",
+                  Departamento: "A 1",
+                  Ciudad: "Tigre",
+                  Provincia: "Buenos Aires",
+                  "Codigo Postal": "123"
+                },
+                setAddressInfo: setAddressInfoMock
+            })
+
+            mockUseOrder.mockReturnValue({
+                order: {
+                    id: 1,
+                    title: "withoutFundsCard",
+                    thumbnail: {
+                        path: "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.",
+                        extension: "jpg"
+                    },
+                    description: "description",
+                    price: 3,
+                    oldPrice: 4,
+                    stock: 5,
+                    characters: {
+                        available: 0,
+                        items: []
+                    }
+                },
+                setOrder: setOrderMock
+            })
+            render(<CheckoutPage />)
+            const PersonalInfoform = screen.getByText('Información Personal');
+            await userEvent.click(PersonalInfoform);
+
+            const nextButton = screen.getByText('Siguiente')
+
+            await userEvent.click(nextButton);
+
+            expect(await screen.findByText('Payment Form')).toBeInTheDocument();
+
+            const nextButtonOnPaymentScreen = screen.getByText('Siguiente')
+
+            await userEvent.click(nextButtonOnPaymentScreen);
+
+            expect(await screen.findByText("Tarjeta sin fondos disponibles")).toBeInTheDocument();
+        })
+
+
+
+        it('should render an error message if the card does not have funds', async () => {
+
+            mockUseAddressInfo.mockReturnValue({
+                addressInfo: {
+                  Dirección: "9 de julio",
+                  Departamento: "A 1",
+                  Ciudad: "Tigre",
+                  Provincia: "Buenos Aires",
+                  "Codigo Postal": "123"
+                },
+                setAddressInfo: setAddressInfoMock
+            })
+
+            mockUseOrder.mockReturnValue({
+                order: {
+                    id: 1,
+                    title: "withoutAuthorizationCard",
+                    thumbnail: {
+                        path: "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.",
+                        extension: "jpg"
+                    },
+                    description: "description",
+                    price: 3,
+                    oldPrice: 4,
+                    stock: 5,
+                    characters: {
+                        available: 0,
+                        items: []
+                    }
+                },
+                setOrder: setOrderMock
+            })
+            render(<CheckoutPage />)
+            const PersonalInfoform = screen.getByText('Información Personal');
+            await userEvent.click(PersonalInfoform);
+
+            const nextButton = screen.getByText('Siguiente')
+
+            await userEvent.click(nextButton);
+
+            expect(await screen.findByText('Payment Form')).toBeInTheDocument();
+
+            const nextButtonOnPaymentScreen = screen.getByText('Siguiente')
+
+            await userEvent.click(nextButtonOnPaymentScreen);
+
+            expect(await screen.findByText("Tarjeta sin autorización. Comuníquese con su banco e intente nuevamente.")).toBeInTheDocument();
+        })
+
+
+        it('should redirect to the Confirmation Order page if the credit card info is correct', async () => {
+
+            render(<CheckoutPage />)
+            const PersonalInfoform = screen.getByText('Información Personal');
+            await userEvent.click(PersonalInfoform);
+
+            const nextButton = screen.getByText('Siguiente')
+
+            await userEvent.click(nextButton);
+
+            expect(await screen.findByText('Payment Form')).toBeInTheDocument();
+
+            const nextButtonOnPaymentScreen = screen.getByText('Siguiente')
+
+            await userEvent.click(nextButtonOnPaymentScreen);
+
+            expect(useRouter).toHaveBeenCalled();
+        })
+
     })
-        
-        /*
-        describe('when submitting credit card form', () => {
-            it('should not render RegisterForm neither CreditCardForm', async () => {
-                render(<StepperForm/>)
-                const form = screen.getByText('RegisterForm')
-                await userEvent.click(form);
-
-                const creditCardForm = screen.getByText('CreditCardForm')
-                await userEvent.click(creditCardForm);
-
-                expect(screen.queryByText('RegisterForm')).not.toBeInTheDocument();
-                expect(screen.queryByText('CreditCardForm')).not.toBeInTheDocument();
-            })
-            it('should render Finished message', async () => {
-                render(<StepperForm/>)
-                
-                const form = screen.getByText('RegisterForm')
-                await userEvent.click(form);
-
-                const creditCardForm = screen.getByText('CreditCardForm')
-                await userEvent.click(creditCardForm);
-
-                expect(await screen.findByText('Finalizado')).toBeInTheDocument();
-            })
-        })*/
-   
 
 })

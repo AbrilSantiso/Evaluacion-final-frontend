@@ -157,8 +157,8 @@ const CheckoutPage: NextPage = () => {
                 {activeStep === 2 && <PaymentForm  handleBack={handleBack} handleNext={handleChangePaymentInfo}/>}
         </Box>
         <ProductCard comic={orderInfo} isCheckout />
-        <Snackbar open={open} autoHideDuration={6000} onClose={() => { setOpen(false) }}>
-          <Alert onClose={() => { setOpen(false) }} severity="error" sx={{ width: '100%' }}>
+        <Snackbar open={open} autoHideDuration={6000} onClose={() => { setOpen(false) }} >
+          <Alert onClose={() => { setOpen(false) }} severity="error" sx={{ width: '100%' }} data-testid="error-bar">
             {error}
           </Alert>
         </Snackbar>
