@@ -21,7 +21,8 @@ const ComicPage: NextPage<ComicPageProps> = ({ comic }) => {
 
   const image = `${comic.thumbnail.path}.${comic.thumbnail.extension}`;
 
-  const {order, setOrder} = useOrderContext();
+
+  const { setOrder} = useOrderContext();
   const router = useRouter();
 
   const onClick=()=>{

@@ -10,10 +10,38 @@ import {
 } from "@mui/material";
 import { ProductCardProps } from "../../../types";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useOrderContext } from "dh-marvel/context/OrderContext";
+import { getComic } from "dh-marvel/services/marvel/marvel.service";
 
 const ProductCard: FC<ProductCardProps> = ({comic, isCheckout}) => {
+
+  const {setOrder} = useOrderContext();
+
+  const router = useRouter();
  
-  const image = `${comic.thumbnail.path}.${comic.thumbnail.extension}`
+  const image = `${comic.thumbnail.path}.${comic.thumbnail.extension}`;
+
+  const handleQuickPurchase  = async () => {
+   
+    await fetch(`/api/compra-en-un-click`, {
+      method: 'POST', body: JSON.stringify(comic), headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(async (res) => {
+      if (res.status == 400) {
+        router.push(`/comics/${comic.id}`);
+        return;
+      } 
+      if(res.status === 200){
+        let data = await res.json()
+        console.log(data.data)
+        setOrder(data.data);
+        router.push("/checkout");
+        return;
+      }
+    })
+  }
   
   return (
             <Card sx={{ width: "400px", height:"400px", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -38,8 +66,8 @@ const ProductCard: FC<ProductCardProps> = ({comic, isCheckout}) => {
              </Typography>
               }
               {!isCheckout && <CardActions>
-                <Button  color="primary">
-                  Comprar
+                <Button  color="primary" onClick={handleQuickPurchase}>
+                  Compra en un click
                 </Button>
                 <Link href={`/comics/${comic.id}`}>
                 <Button  color="primary">
