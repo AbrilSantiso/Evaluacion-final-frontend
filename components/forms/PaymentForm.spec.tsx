@@ -44,7 +44,8 @@ describe('Payment Information form', () => {
                 "Número de tarjeta": "11111111111111",
                 "Nombre como aparece en la tarjeta": "Abril",
                 "EXP MM/YY": "10/19",
-                CVV: '123'
+                CVV: '123',
+                focus: "CVV"
             })
         })
     })
@@ -56,7 +57,8 @@ describe('Payment Information form', () => {
                     "Número de tarjeta": "24242424242424",
                     "Nombre como aparece en la tarjeta": "Abril",
                     "EXP MM/YY": "10/19",
-                    CVV: '123'
+                    CVV: '123',
+                    focus: "number"
                 })).toBeTruthy();
             })
         })
@@ -66,28 +68,32 @@ describe('Payment Information form', () => {
                 "Número de tarjeta": "11",
                 "Nombre como aparece en la tarjeta": "Abril",
                 "EXP MM/YY": "10/19",
-                CVV: '123'  
+                CVV: '123',
+                focus: "number"
             }
             
             const invalidName: PaymentInformationData = {
                 "Número de tarjeta": "24242424242424",
                 "Nombre como aparece en la tarjeta": "A",
                 "EXP MM/YY": "10/19",
-                CVV: '123'  
+                CVV: '123',
+                focus: "number"  
             }
             
             const invalidExp: PaymentInformationData = {
                 "Número de tarjeta": "24242424242424",
                 "Nombre como aparece en la tarjeta": "Abril",
                 "EXP MM/YY": "1019",
-                CVV: '123'  
+                CVV: '123',
+                focus: "number"
             }
 
             const invalidCVV: PaymentInformationData = {
                 "Número de tarjeta": "24242424242424",
                 "Nombre como aparece en la tarjeta": "Abril",
                 "EXP MM/YY": "10/19",
-                CVV: '1'  
+                CVV: '1',
+                focus: "number"
             }
                          
 

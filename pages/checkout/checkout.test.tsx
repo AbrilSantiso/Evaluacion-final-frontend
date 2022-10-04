@@ -73,28 +73,32 @@ jest.mock('dh-marvel/components/forms/PaymentForm', () => jest.fn((props: Paymen
         "Número de tarjeta": "1111111111111111",
         "Nombre como aparece en la tarjeta": "Abril",
         "EXP MM/YY": "11/11",
-        CVV: "123"
+        CVV: "123",
+        focus: "number"
     }
 
     const withoutFundsCard: PaymentInformationData = {
         "Número de tarjeta":  '4111 4111 4111 4111'.replace(" ", ""),
         "Nombre como aparece en la tarjeta": "Abril",
         "EXP MM/YY": "11/11",
-        CVV: "123"
+        CVV: "123",
+        focus: "number"
     }
 
     const withoutAuthorizationCard: PaymentInformationData = {
         "Número de tarjeta":  '4000 4000 4000 4000'.replace(" ", ""),
         "Nombre como aparece en la tarjeta": "Abril",
         "EXP MM/YY": "11/11",
-        CVV: "123"
+        CVV: "123",
+        focus: "number"
     }
 
     const correctPaymentData: PaymentInformationData = {
         "Número de tarjeta": "4242424242424242",
         "Nombre como aparece en la tarjeta": "Abril",
         "EXP MM/YY": "11/11",
-        CVV: "123"
+        CVV: "123",
+        focus: "number"
     }
 
     const { order } = useOrderContext();
